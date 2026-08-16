@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Heanti Bird</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#55c9d3}
+body{font-family:Arial,sans-serif;touch-action:none}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;background:#55c9d3}
+#ui{position:fixed;inset:0;z-index:5;pointer-events:none}
+.panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(86vw,380px);padding:30px 22px;text-align:center;background:#fffdf5;border:4px solid #624735;border-radius:26px;box-shadow:0 10px 0 #668f91,0 22px 45px #164b5355;pointer-events:auto}
+.panel h1{margin:0 0 8px;font-size:clamp(36px,10vw,52px);color:#ee7626;text-shadow:3px 3px #704a35}
+.panel p{color:#41666b;font-weight:700;line-height:1.45}
+.logo{width:90px;height:90px;margin:0 auto 10px;border-radius:50%;background:#ffd84b;border:5px solid #65442a;display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:inset -8px -8px #e88b20,0 6px #cfc3a4;transform:rotate(-7deg)}
+.mainMenu{width:min(90vw,430px);padding:18px 22px 20px;overflow:hidden;background:linear-gradient(180deg,#fffef9,#f7fff1);border:3px solid #684a37;border-radius:30px;box-shadow:0 9px 0 #668d8f,0 24px 50px #174b5370}
+.mainMenu:before{content:"";position:absolute;inset:5px;border:2px solid #ffffffaa;border-radius:24px;pointer-events:none}
+.brandTag{display:inline-block;padding:6px 12px;border-radius:99px;background:#275f67;color:#fff;font-size:10px;font-weight:900;letter-spacing:1.5px;box-shadow:0 3px #163f45}
+.logoStage{position:relative;width:100%;height:170px;margin:8px auto 0;overflow:hidden;border-radius:22px;background:linear-gradient(#54cbd5 0%,#75d6d9 68%,#b7e48b 68%);border:3px solid #5c817e;box-shadow:inset 0 -10px #99cf69}
+.logoStage:after{content:"";position:absolute;left:0;right:0;bottom:25px;height:5px;background:#e4f28c;box-shadow:0 13px #83bd50}
+.logoCloud{position:absolute;background:#fffef2;border-radius:50px;opacity:.9}
+.cloudA{width:72px;height:20px;left:16px;top:25px;box-shadow:20px -8px 0 4px #fffef2,43px 0 0 #fffef2}
+.cloudB{width:58px;height:17px;right:24px;top:50px;box-shadow:17px -7px 0 3px #fffef2,35px 0 #fffef2}
+.logoPipe{position:absolute;width:30px;height:100px;background:linear-gradient(90deg,#418c20,#a9e85b,#4a9824);bottom:-12px;border:2px solid #3d6829}
+.logoPipe:before{content:"";position:absolute;left:-6px;right:-6px;height:20px;background:#68b42a;border:2px solid #3d6829}
+.pipeLeft{left:18px}.pipeLeft:before{top:0}.pipeRight{right:18px}.pipeRight:before{top:0}
+.logoBirdArt{position:absolute;z-index:3;left:50%;top:57px;width:84px;height:66px;transform:translateX(-50%) rotate(-7deg);filter:drop-shadow(0 6px 0 #7d7c4a55)}
+.bodyArt{position:absolute;left:16px;top:18px;width:58px;height:42px;background:linear-gradient(145deg,#fff16b,#ffd03c 55%,#e98a1b);border:3px solid #634127;border-radius:52% 48% 50% 55%}
+.headArt{position:absolute;left:41px;top:3px;width:42px;height:42px;background:#ffd94a;border:3px solid #634127;border-radius:50%}
+.wingArt{position:absolute;z-index:4;left:5px;top:25px;width:40px;height:25px;background:#e9911e;border:3px solid #634127;border-radius:70% 30% 65% 35%;transform:rotate(-20deg)}
+.tailArt{position:absolute;left:8px;top:26px;width:28px;height:29px;background:#e27d19;border:3px solid #634127;clip-path:polygon(100% 50%,0 0,20% 50%,0 100%);z-index:2}
+.eyeArt{position:absolute;z-index:6;left:65px;top:11px;width:17px;height:17px;background:#fff;border:2px solid #634127;border-radius:50%}.eyeArt i{display:block;width:7px;height:7px;margin:4px;background:#222;border-radius:50%}
+.beakArt{position:absolute;z-index:6;left:77px;top:29px;width:22px;height:16px;background:#f26c21;border:2px solid #633c20;clip-path:polygon(0 0,100% 40%,0 100%)}
+.mainMenu h1{margin:12px 0 0;font-size:clamp(39px,10vw,53px);line-height:.95;letter-spacing:1px;color:#ef7625;text-shadow:3px 4px #704a35}.mainMenu h1 span{color:#2a6970}
+.subtitle{margin:7px 0 14px;color:#668488;font-size:11px;font-weight:900;letter-spacing:3px}
+.startGameBtn{position:relative;width:92%;height:64px;padding:0 15px;display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(180deg,#ffad50,#ef7223 55%,#df5d1d);border:3px solid #8e431c;border-radius:19px;box-shadow:0 7px #963f18,0 12px 22px #bc572d45;overflow:hidden}
+.startGameBtn:before{content:"";position:absolute;left:-40%;top:0;width:35%;height:100%;background:#ffffff55;transform:skewX(-20deg);animation:shine 2.8s infinite}
+@keyframes shine{0%,55%{left:-45%}80%,100%{left:120%}}
+.playIcon{font-size:25px}.startGameBtn span:nth-child(2){font-size:21px}.startGameBtn small{position:absolute;right:13px;bottom:8px;font-size:8px;opacity:.8;letter-spacing:1px}
+.quickInfo{display:flex;justify-content:space-around;margin:18px 2px 10px;padding:10px 4px;border-top:1px solid #c8dddd;border-bottom:1px solid #c8dddd}.quickInfo div{display:flex;flex-direction:column;align-items:center;gap:3px;color:#668083;font-size:8px;font-weight:900}.quickInfo b{height:22px;color:#2b686e;font-size:13px;display:flex;align-items:center}
+.menuFooter{margin:5px 0 0!important;color:#91a4a5!important;font-size:9px!important;letter-spacing:2px;font-weight:900!important}
+button{border:0;border-radius:17px;padding:16px 30px;font-size:20px;font-weight:900;color:white;background:linear-gradient(#ff9b3d,#ec6b21);box-shadow:0 6px #a94b18,0 12px 24px #b954293d;cursor:pointer}
+button:active{transform:translateY(4px);box-shadow:0 2px #a94b18}
+#score{display:none;position:absolute;top:5vh;left:50%;transform:translateX(-50%);font-size:clamp(44px,10vw,76px);font-weight:900;color:white;text-shadow:3px 4px #36767c}
+#hud{display:none;position:absolute;right:14px;top:14px;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:430px){#hud{right:9px;top:9px}.small{font-size:12px;padding:8px 9px}}
+.small{font-size:14px;padding:9px 12px;background:white;color:#28585d;box-shadow:0 3px #9bbfc2}
+#pauseText{display:none;position:absolute;top:16%;left:50%;transform:translateX(-50%);font-size:30px;font-weight:900;color:white;text-shadow:2px 3px #36767c}
+.hidden{display:none!important}
+.stats{display:flex;justify-content:center;gap:35px;margin:18px}
+.stats b{display:block;font-size:30px;color:#ed7626}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM MUSIC: put these files next to this HTML -->
+<!-- CUSTOM MUSIC FILES: keep these files beside this HTML -->
+<audio id="bgMusic" preload="auto" loop><source src="background.mp3" type="audio/mpeg"></audio>
+<audio id="jumpMusic" preload="auto"><source src="jump.mp3" type="audio/mpeg"></audio>
+<audio id="gameOverMusic" preload="auto"><source src="death.mp3" type="audio/mpeg"></audio>
+
+<canvas id="game"></canvas>
+<div id="ui">
+  <div id="score">0</div>
+  <div id="hud"><button class="small" id="menuBtn">⌂ MENU</button><button class="small" id="pause">Ⅱ</button><button class="small" id="mute">🔊</button></div>
+  <div id="pauseText">PAUSED</div>
+
+  <section id="menu" class="panel mainMenu">
+    <div class="brandTag">★ ARCADE EDITION ★</div>
+    <div class="logoStage">
+      <div class="logoCloud cloudA"></div><div class="logoCloud cloudB"></div>
+      <div class="logoPipe pipeLeft"></div><div class="logoPipe pipeRight"></div>
+      <div class="logoBirdArt"><div class="tailArt"></div><div class="wingArt"></div><div class="bodyArt"></div><div class="headArt"></div><div class="eyeArt"><i></i></div><div class="beakArt"></div></div>
+      <div class="scoreBadge">BEST <b id="menuBest">0</b></div>
+    </div>
+    <h1>Heanti <span>Bird</span></h1>
+    <div class="subtitle">FLY • DODGE • SURVIVE</div>
+    <button id="start" class="startGameBtn"><span class="playIcon">▶</span><span>START GAME</span><small>PRESS TO FLY</small></button>
+    <div class="quickInfo"><div><b>👆</b><span>TAP</span></div><div><b>SPACE</b><span>FLAP</span></div><div><b>🏆</b><span>HIGH SCORE</span></div></div>
+    <p class="menuFooter">ONE TAP • ENDLESS FUN</p>
+  </section>
+
+  <section id="over" class="panel hidden">
+    <h1>GAME OVER</h1>
+    <div class="stats"><div>SCORE<b id="final">0</b></div><div>BEST<b id="best">0</b></div></div>
+    <button id="again">PLAY AGAIN</button>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+var canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+var menu=document.getElementById("menu"),over=document.getElementById("over");
+var scoreBox=document.getElementById("score"),hud=document.getElementById("hud");
+var pauseText=document.getElementById("pauseText"),start=document.getElementById("start");
+var again=document.getElementById("again"),pause=document.getElementById("pause"),mute=document.getElementById("mute"),menuBtn=document.getElementById("menuBtn");
+var finalBox=document.getElementById("final"),bestBox=document.getElementById("best");
+
+var W=1,H=1,dpr=1,state="menu",score=0,best=0,last=0,spawn=0,muted=false,audio=null;
+var bird={x:0,y:0,vy:0,r:19,rot:0,wing:0};
+var pipes=[],clouds=[];
+
+var bgMusic=document.getElementById("bgMusic");
+var jumpMusic=document.getElementById("jumpMusic");
+var gameOverMusic=document.getElementById("gameOverMusic");
+
+function startBackgroundMusic(){
+  try{
+    bgMusic.volume=0.28;
+    var p=bgMusic.play();
+    if(p&&p.catch)p.catch(function(){});
+  }catch(e){}
+}
+function stopBackgroundMusic(){
+  try{bgMusic.pause();bgMusic.currentTime=0;}catch(e){}
+}
+function playCustomMusic(a){
+  try{a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){});}catch(e){}
+}
+function stopCustomMusic(a){
+  try{a.pause();a.currentTime=0;}catch(e){}
+}
+
+
+function getBest(){try{return parseInt(localStorage.getItem("skyHopperBest")||"0",10)||0}catch(e){return 0}}
+function setBest(v){try{localStorage.setItem("skyHopperBest",String(v))}catch(e){}}
+best=getBest();bestBox.textContent=best;document.getElementById("menuBest").textContent=best;
+
+function resize(){
+  W=window.innerWidth||360; H=window.innerHeight||640; dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.max(1,Math.floor(W*dpr));canvas.height=Math.max(1,Math.floor(H*dpr));
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  bird.r=Math.max(16,Math.min(24,Math.min(W,H)*.036));
+  bird.x=W*.28;
+  if(state==="menu"||state==="over")bird.y=H*.45;
+  clouds=[];
+  for(var i=0;i<Math.max(6,Math.ceil(W/150));i++)clouds.push({x:Math.random()*W,y:H*(.75+Math.random()*.16),s:.6+Math.random(),v:8+Math.random()*10});
+}
+window.addEventListener("resize",resize);
+
+function reset(){
+ score=0;spawn=0;pipes=[];bird.x=W*.28;bird.y=H*.45;bird.vy=0;bird.rot=0;bird.wing=0;scoreBox.textContent="0";
+}
+function startGame(){
+ stopCustomMusic(gameOverMusic);stopBackgroundMusic();
+ reset();state="play";menu.classList.add("hidden");startBackgroundMusic();over.classList.add("hidden");scoreBox.style.display="block";hud.style.display="flex";pauseText.style.display="none";last=performance.now();
+ try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}
+ flap();
+}
+function flap(){
+ if(state==="menu"){startGame();return}
+ if(state==="paused"){togglePause();return}
+ if(state!=="play")return;
+ bird.vy=-Math.max(430,Math.min(560,H*.72));bird.wing=1;sound(600,.05);playCustomMusic(jumpMusic);
+}
+function backToMenu(){
+  state="menu";
+  stopCustomMusic(bgMusic);
+  stopCustomMusic(jumpMusic);
+  stopCustomMusic(gameOverMusic);
+  pipes=[];
+  score=0;
+  scoreBox.textContent="0";
+  scoreBox.style.display="none";
+  hud.style.display="none";
+  pauseText.style.display="none";
+  pause.textContent="Ⅱ";
+  over.classList.add("hidden");
+  menu.classList.remove("hidden");
+  bird.x=W*.28;
+  bird.y=H*.45;
+  bird.vy=0;
+  bird.rot=0;
+  bestBox.textContent=best;
+  var mb=document.getElementById("menuBest");
+  if(mb)mb.textContent=best;
+}
+function togglePause(){
+ if(state==="play"){state="paused";pauseText.style.display="block";pause.textContent="▶"}
+ else if(state==="paused"){state="play";pauseText.style.display="none";pause.textContent="Ⅱ";last=performance.now()}
+}
+function sound(f,d){
+ if(muted||!audio)return;
+ try{if(audio.state==="suspended")audio.resume();var o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;o.type="square";g.gain.value=.025;g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(e){}
+}
+function addPipe(){
+ var gap=Math.max(125,Math.min(205,H*.30)-Math.min(score*1.0,35));
+ var margin=Math.max(55,H*.10),max=H*.88-gap-margin;
+ var top=margin+Math.random()*Math.max(1,max-margin);
+ pipes.push({x:W+30,top:top,gap:gap,w:Math.max(62,Math.min(100,W*.11)),passed:false});
+}
+function update(dt){
+ for(var c of clouds){c.x-=c.v*dt;if(c.x<-100*c.s)c.x=W+80}
+ bird.vy+=Math.max(1200,H*2)*dt;bird.y+=bird.vy*dt;bird.rot=Math.max(-.5,Math.min(1.2,bird.vy/650));bird.wing=Math.max(0,bird.wing-dt*7);
+ spawn+=dt;if(spawn>Math.max(.95,1.35-score*.002)){spawn=0;addPipe()}
+ var sp=Math.max(180,Math.min(310,W*.31+score));
+ for(var p of pipes){p.x-=sp*dt;if(!p.passed&&p.x+p.w<bird.x){p.passed=true;score++;scoreBox.textContent=score;sound(880,.06)}}
+ pipes=pipes.filter(function(p){return p.x+p.w>-20});
+ if(bird.y-bird.r<0||bird.y+bird.r>H*.91)return die();
+ for(var q of pipes){
+   var hitX=bird.x+bird.r*.75>q.x&&bird.x-bird.r*.75<q.x+q.w;
+   var hitY=bird.y-bird.r*.75<q.top||bird.y+bird.r*.75>q.top+q.gap;
+   if(hitX&&hitY)return die();
+ }
+}
+function die(){
+ if(state!=="play")return;
+ state="over";if(score>best){best=score;setBest(best)}finalBox.textContent=score;bestBox.textContent=best;document.getElementById("menuBest").textContent=best;over.classList.remove("hidden");hud.style.display="none";
+}
+function sky(){
+ ctx.fillStyle="#55c9d3";ctx.fillRect(0,0,W,H);
+ ctx.fillStyle="#fff2a0";ctx.beginPath();ctx.arc(W*.78,H*.15,Math.min(W,H)*.055,0,Math.PI*2);ctx.fill();
+ for(var c of clouds){ctx.save();ctx.translate(c.x,c.y);ctx.scale(c.s,c.s);ctx.fillStyle="#fffef1";ctx.beginPath();ctx.arc(0,15,22,0,Math.PI*2);ctx.arc(25,7,30,0,Math.PI*2);ctx.arc(57,16,22,0,Math.PI*2);ctx.rect(-24,15,105,25);ctx.fill();ctx.restore()}
+}
+function pipe(p){
+ var x=p.x,w=p.w;
+ drawPipePart(x,0,w,p.top,false);drawPipePart(x,p.top+p.gap,w,H*.91-(p.top+p.gap),true);
+}
+function drawPipePart(x,y,w,h,bottom){
+ if(h<=0)return;
+ var cap=17,cy=bottom?y:y+h-cap;
+ var g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,"#428e20");g.addColorStop(.2,"#b5e55a");g.addColorStop(.55,"#8fd43a");g.addColorStop(1,"#3b821d");
+ ctx.fillStyle=g;ctx.fillRect(x,y,w,h);
+ ctx.fillStyle="#62ad25";ctx.fillRect(x-6,cy,w+12,cap);ctx.fillStyle="#b7ed62";ctx.fillRect(x+2,cy+3,w-4,5);ctx.strokeStyle="#4b582d";ctx.lineWidth=4;ctx.strokeRect(x-6,cy,w+12,cap);
+}
+function ground(){var y=H*.91;ctx.fillStyle="#9bd449";ctx.fillRect(0,y,W,H-y);ctx.fillStyle="#e0f18a";ctx.fillRect(0,y,W,8)}
+function birdDraw(){
+ ctx.save();ctx.translate(bird.x,bird.y);ctx.rotate(bird.rot);var r=bird.r;
+ ctx.fillStyle="#e57e18";ctx.strokeStyle="#613c20";ctx.lineWidth=Math.max(2,r*.12);
+ ctx.beginPath();ctx.moveTo(-r*.7,0);ctx.lineTo(-r*1.5,-r*.45);ctx.lineTo(-r*1.35,.05*r);ctx.lineTo(-r*1.58,r*.45);ctx.lineTo(-r*.4,r*.35);ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.save();ctx.rotate(bird.wing?-.35:Math.sin(performance.now()/75)*.2);ctx.fillStyle="#e9921d";ctx.beginPath();ctx.ellipse(-r*.25,.05*r,r*.75,r*.43,-.25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+ var bg=ctx.createLinearGradient(-r,-r,r,r);bg.addColorStop(0,"#fff06b");bg.addColorStop(.5,"#ffd13d");bg.addColorStop(1,"#e98a19");ctx.fillStyle=bg;ctx.beginPath();ctx.ellipse(0,0,r*1.03,r*.86,-.08,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle="#ffd94a";ctx.beginPath();ctx.arc(r*.18,-r*.48,r*.72,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle="#f29a1f";ctx.beginPath();ctx.moveTo(-r*.22,-r*1.02);ctx.lineTo(-r*.02,-r*1.4);ctx.lineTo(r*.13,-r*1.02);ctx.lineTo(r*.28,-r*1.27);ctx.lineTo(r*.35,-r*.7);ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(r*.48,-r*.62,r*.3,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle="#222";ctx.beginPath();ctx.arc(r*.54,-r*.62,r*.14,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(r*.59,-r*.68,r*.05,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#f47722";ctx.beginPath();ctx.moveTo(r*.68,-r*.2);ctx.lineTo(r*1.5,-r*.02);ctx.lineTo(r*.78,r*.12);ctx.lineTo(r*.62,r*.02);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle="#e85120";ctx.beginPath();ctx.moveTo(r*.72,r*.08);ctx.lineTo(r*1.42,r*.14);ctx.lineTo(r*.78,r*.32);ctx.lineTo(r*.6,r*.16);ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.restore();
+}
+function draw(){sky();for(var p of pipes)pipe(p);ground();if(state!=="menu"||bird.y)birdDraw()}
+function loop(t){var dt=Math.min(.033,(t-last)/1000||0);last=t;if(state==="play")update(dt);draw();requestAnimationFrame(loop)}
+
+canvas.addEventListener("pointerdown",function(e){e.preventDefault();flap()},{passive:false});
+document.addEventListener("keydown",function(e){if(e.code==="Space"||e.code==="ArrowUp"){e.preventDefault();flap()}if(e.key.toLowerCase()==="p")togglePause()});
+start.onclick=startGame;again.onclick=startGame;pause.onclick=togglePause;menuBtn.onclick=backToMenu;
+mute.onclick=function(){
+  muted=!muted;
+  mute.textContent=muted?"🔇":"🔊";
+  try{
+    bgMusic.muted=muted;jumpMusic.muted=muted;gameOverMusic.muted=muted;
+    if(!muted && state==="play")startBackgroundMusic();
+  }catch(e){}
+};
+window.addEventListener("blur",function(){if(state==="play")togglePause()});
+document.addEventListener("visibilitychange",function(){
+  if(document.hidden){
+    try{bgMusic.pause();jumpMusic.pause();gameOverMusic.pause();}catch(e){}
+  }else if(state==="play"&&!muted){
+    startBackgroundMusic();
+  }
+});
+
+resize();reset();draw();last=performance.now();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
